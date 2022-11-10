@@ -18,7 +18,7 @@ type remember struct {
      amount int
 }
 
-rkserver := ""
+rkserver = ""
 const MAX_FILES = 4096
 
 func RK_CNT(cond bool, t int, f int, m []int) (res bool) {
