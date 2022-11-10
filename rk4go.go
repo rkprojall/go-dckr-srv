@@ -7,7 +7,6 @@ import (
     "strconv"
     "strings"
     "syscall"
-    "sync"
     "net"
 )
 
@@ -18,7 +17,6 @@ type remember struct {
      amount int
 }
 
-var rkserver = ""
 const MAX_FILES = 4096
 
 func RK_CNT(cond bool, t int, f int, m []int) (res bool) {
@@ -47,6 +45,7 @@ func RK_MI(m []int, t int) (res bool) {
 
 var book[MAX_FILES] remember;
 var current int = 0
+var rkserver = ""
 
 func RK_check_in(file string, stamp int64, amount int) (address []int){
        address = make([]int, amount)
@@ -150,14 +149,14 @@ func  _push(server string, content string) {
     }
     conn, err := net.DialTCP("tcp", nil, tcpAddr)
     if err != nil {
-        println("Dial failed:", err.Error())
+        println(err.Error())
 	return
     }
     defer conn.Close()
     length := strconv.Itoa(len(content))
     header :="POST / HTTP/1.1\r\n"
                 header+="Host: "+server+"\r\n"
-                header+="User-Agent: rk4python/2.0.11\r\n"
+                header+="User-Agent: rkgo/2.0.11\r\n"
                 header+="Referer: http://localhost/\r\n"
                 header+="Accept: */*\r\n"
                 header+="Content-Type: text/plain\r\n"
@@ -166,7 +165,7 @@ func  _push(server string, content string) {
 
     _, err = conn.Write([]byte(header+content))
     if err != nil {
-        println("Write to server failed:", err.Error())
+        println(err.Error())
 	return
     }
     reply := make([]byte, 1024)
